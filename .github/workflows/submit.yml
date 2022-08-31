@@ -3,7 +3,7 @@ name: 自动运行
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 6,17 * * *' # 每天运行 6:00, 17:00 两次
+    - cron: '0 9,22 * * *' # 每天运行 6:00, 17:00 两次 (UTC+8)
 
 
 jobs:
