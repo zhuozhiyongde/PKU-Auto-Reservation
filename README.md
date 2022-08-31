@@ -1,6 +1,6 @@
 # 园区往返自动报备
 
-[完整教程](https://xiaotianxt.com/posts/informal/pku-simso-free/) （并没有开始写）
+园区往返是大部分研究生同学日常，而每日填写出入校申请稍显繁琐。本仓库旨在自动化完成申请，请如实填写园区往返信息。[完整教程请见此链接](https://xiaotianxt.com/posts/informal/pku-simso-free/) 。
 
 ## 简要上手教程
 
