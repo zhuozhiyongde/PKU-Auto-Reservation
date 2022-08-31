@@ -16,9 +16,9 @@ jobs:
         run: pip3 install requests
       - name: 运行
         env:
-          STUDENTID: ${secrets.STUDENTID}
-          PASSWORD: ${secrets.PASSWORD}
-          DESCRIPTION: ${secrets.DESCRIPTION}
-          PLACES: ${secrets.PLACES}
-          DELTA: ${secrets.DELTA}
+          STUDENTID: ${{secrets.STUDENTID}}
+          PASSWORD: ${{secrets.PASSWORD}}
+          DESCRIPTION: ${{secrets.DESCRIPTION}}
+          PLACES: ${{secrets.PLACES}}
+          DELTA: ${{secrets.DELTA}}
         run: python3 main.py
