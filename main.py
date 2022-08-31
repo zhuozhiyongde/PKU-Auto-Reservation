@@ -2,10 +2,8 @@ from session import Session
 import os
 
 
-assert 'STUDENTID' in os.environ, "请设置 STUDENTID"
-assert 'PASSWORD' in os.environ, "请设置 PASSWORD"
-assert 'DESCRIPTION' in os.environ, "请设置 DESCRIPTION"
-assert 'PLACES' in os.environ, "请设置 PLACES"
+assert all(key in os.environ for key in [
+           'STUDENTID', 'PASSWORD', 'DESCRIPTION', 'PLACES']), "Not all keys are provided"
 
 username = os.environ['STUDENTID']
 password = os.environ['PASSWORD']

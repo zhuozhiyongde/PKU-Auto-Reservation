@@ -5,20 +5,6 @@ import random
 from urllib import parse
 from functools import wraps
 
-# test
-saveInput = {
-    "crxjtsx": "吃饭开会见女友",
-    "crxrq": "20220901",
-    "yqc": [
-        "燕园",
-        "万柳园区"
-    ],
-    "yqr": [
-        "燕园",
-        "万柳园区"
-    ],
-}
-
 
 class Session(requests.Session):
     def __init__(self, *args, **kwargs) -> None:
