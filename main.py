@@ -11,7 +11,7 @@ username = os.environ['STUDENTID']
 password = os.environ['PASSWORD']
 places = os.environ['PLACES'].split(',')
 description = os.environ['DESCRIPTION']
-time = int(os.environ['DELTA']) if 'DELTA' in os.environ else 0
+time = int(os.environ['DELTA'])
 
 if __name__ == '__main__':
     s = Session()

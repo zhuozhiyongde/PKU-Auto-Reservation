@@ -1,4 +1,4 @@
-name: submit
+name: 自动运行
 
 on:
   workflow_dispatch:
@@ -15,4 +15,10 @@ jobs:
       - name: 安装依赖
         run: pip3 install requests
       - name: 运行
+        env:
+          STUDENTID: ${secrets.STUDENTID}
+          PASSWORD: ${secrets.PASSWORD}
+          DESCRIPTION: ${secrets.DESCRIPTION}
+          PLACES: ${secrets.PLACES}
+          DELTA: ${secrets.DELTA}
         run: python3 main.py
