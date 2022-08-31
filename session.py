@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import requests
 import random
@@ -118,11 +118,11 @@ class Session(requests.Session):
                    'yddh', 'ssfjh', 'ssl', 'ssyq', 'dzyx', 'lxdh']), '无法获取住宿、联系信息'
         return lxxx
 
-    def save(self, **info):
+    def save(self, delta=0, **info):
         """尝试保存出入校信息"""
         # supplement info
         template = {
-            "crxrq": datetime.now().strftime('%Y%m%d'),
+            "crxrq": (datetime.now() + timedelta(days=delta)).strftime('%Y%m%d'),
             "sqbh": "",
             "crxqd": "",
             "crxzd": "",
