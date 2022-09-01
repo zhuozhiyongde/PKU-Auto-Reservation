@@ -150,7 +150,7 @@ class Session(requests.Session):
         json = self.get('https://simso.pku.edu.cn/ssapi/stuaffair/epiApply/submitSqxx', params={
             'sqbh': row
         }).json()
-        return json['success']
+        assert json['success'], json
 
     def get_latest(self):
         # 获取最近的申请信息
