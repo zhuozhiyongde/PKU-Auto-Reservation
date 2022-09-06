@@ -3,8 +3,7 @@ name: 自动运行
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 9,22 * * *' # 每天运行 6:00, 17:00 两次 (UTC+8)
-
+    - cron: "0 9,22 * * *" # 每天运行 6:00, 17:00 两次 (UTC+8)
 
 jobs:
   build:
@@ -12,6 +11,13 @@ jobs:
     steps:
       - name: 拉取代码
         uses: actions/checkout@v2
+      - name: 同步上游分支
+        uses: tgymnich/fork-sync@v1.4
+        with:
+          owner: xiaotianxt
+          base: main
+          head: main
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: 安装 python
         uses: actions/setup-python@v2
       - name: 安装依赖
@@ -24,3 +30,9 @@ jobs:
           PLACES: ${{secrets.PLACES}}
           DELTA: ${{secrets.DELTA}}
         run: python3 main.py
+      - name: 保持仓库运行
+        uses: EndBug/add-and-commit@v9.1.0
+        with:
+          commit: --allow-empty
+          message: "An empty commit to keep github actions alive"
+          new_branch: keep-github-actions-alive
