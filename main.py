@@ -3,7 +3,7 @@ import os
 
 
 assert all(key in os.environ for key in [
-           'STUDENTID', 'PASSWORD', 'DESCRIPTION', 'PLACES']), "Not all keys are provided"
+           'STUDENTID', 'PASSWORD', 'DESCRIPTION', 'PLACES', 'DELTA']), "Not all keys are provided"
 
 username = os.environ['STUDENTID']
 password = os.environ['PASSWORD']
@@ -17,6 +17,8 @@ if __name__ == '__main__':
     try:
         rowid = s.save(crxjtsx=description, yqc=places,
                        yqr=places, delta=delta)
+        s.upload_img(b'empty image', 'xcm')
+        s.upload_img(b'empty img', 'bjjkb')
     except Exception as e:
         msg = e.args[0]['msg'] if 'msg' in e.args[0] else e.args[0]
         if '存在尚未审核通过的园区往返申请记录' in msg:
@@ -24,5 +26,5 @@ if __name__ == '__main__':
         else:
             print(msg)
             exit(1)
-    s.submit(rowid)
+    s.submit()
     exit(0)

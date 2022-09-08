@@ -67,7 +67,7 @@ class Session(requests.Session):
         json = self.get('https://simso.pku.edu.cn/ssapi/simsoLogin', params={
             'token': token
         }).json()
-        assert json['success']
+        assert json['success'], json
         sid = json['sid']
 
         # 设置请求参数
