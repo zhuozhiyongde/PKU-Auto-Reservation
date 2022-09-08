@@ -2,8 +2,10 @@ from datetime import datetime, timedelta
 import json
 import requests
 import random
+import string
 from urllib import parse
 from functools import wraps
+from requests_toolbelt import MultipartEncoder
 
 
 class Session(requests.Session):
@@ -65,7 +67,7 @@ class Session(requests.Session):
         json = self.get('https://simso.pku.edu.cn/ssapi/simsoLogin', params={
             'token': token
         }).json()
-        assert json['success']
+        assert json['success'], json
         sid = json['sid']
 
         # 设置请求参数
@@ -143,12 +145,33 @@ class Session(requests.Session):
         json = self.post('https://simso.pku.edu.cn/ssapi/stuaffair/epiApply/saveSqxx',
                          params={'applyType': 'yqwf'}, json=template).json()
         assert json['success'], json
-        return json['row']
 
-    def submit(self, row) -> bool:
-        # 提交申请信息
+        self.sqbh = json['row']  # 申请编号
+        return
+
+    def upload_img(self, img, cldms):
+        assert self.sqbh, '请先获取申请编号！'
+        assert cldms in ['bjjkb', 'xcm'], '文件上传类型应当为 bjjkb / xcm'
+
+        boundary = '------WebKitFormBoundary' + \
+            ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+
+        fields = {
+            'files': (f'WechatIMG{random.randint(50, 150)}.jpeg', img, 'image/jpeg'),
+            'cldms': cldms,
+            'sqbh': self.sqbh
+        }
+
+        m = MultipartEncoder(fields=fields, boundary=boundary)
+        json = self.post('https://simso.pku.edu.cn/ssapi/stuaffair/epiApply/uploadZmcl',
+                         headers={'Content-Type': m.content_type}, data=m).json()
+
+        assert json['success'], json
+
+    def submit(self) -> bool:
+        assert self.sqbh, "请先获取申请编号！"
         json = self.get('https://simso.pku.edu.cn/ssapi/stuaffair/epiApply/submitSqxx', params={
-            'sqbh': row
+            'sqbh': self.sqbh
         }).json()
         assert json['success'], json
 
@@ -157,6 +180,8 @@ class Session(requests.Session):
         json = self.get(
             'https://simso.pku.edu.cn/ssapi/stuaffair/epiApply/getSqxxHis?pageNum=1').json()
         assert json['success']
+
+        self.sqbh = json['row'][0]['sqbh']
         return json['row'][0]
 
 
