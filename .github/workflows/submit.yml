@@ -12,12 +12,13 @@ jobs:
       - name: 拉取代码
         uses: actions/checkout@v2
       - name: 同步上游分支
-        uses: tgymnich/fork-sync@v1.4
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.1
         with:
-          owner: xiaotianxt
-          base: main
-          head: main
-          token: ${{ secrets.GITHUB_TOKEN }}
+          target_sync_branch: main
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_branch: main
+          upstream_sync_repo: xiaotianxt/PKU-SIMSO-FREE
       - name: 安装 python
         uses: actions/setup-python@v2
       - name: 安装依赖
