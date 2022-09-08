@@ -21,7 +21,7 @@ jobs:
       - name: 安装 python
         uses: actions/setup-python@v2
       - name: 安装依赖
-        run: pip3 install requests
+        run: pip3 install requests requests_toolbelt
       - name: 运行
         env:
           STUDENTID: ${{secrets.STUDENTID}}
