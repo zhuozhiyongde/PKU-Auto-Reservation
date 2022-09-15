@@ -24,6 +24,9 @@ class Session(requests.Session):
             'Connection': 'keep-alive',
         })
 
+    def __del__(self):
+        self.close()
+
     def get(self, url, *args, **kwargs):
         """重写 get 方法，验证状态码，转化为 json"""
         res = super().get(url, *args, **kwargs)
@@ -79,6 +82,7 @@ class Session(requests.Session):
         return self.login_check()
 
     def login_check(self):
+        """检查是否已登录"""
         json = self.get(
             'https://simso.pku.edu.cn/ssapi/stuaffair/epiApply/getJrsqxx').json()
         return json['success'] and json['row']['sfyxsq'] == 'y'
@@ -93,24 +97,27 @@ class Session(requests.Session):
 
     @login_check_wrapper
     def status(self):
-        # 获取申请状态
+        """获取申请状态（当前是否可申请）"""
         json = self.get(
             'https://simso.pku.edu.cn/ssapi/stuaffair/epiApply/getSqzt').json()
         assert json['success']
         return json
 
     def get_supplement(self):
+        """获取补充信息"""
         lxxx = self.status()['row']['lxxx']
         lxxx.update(dzyx=lxxx['email'], lxdh=lxxx['yddh'])
         assert all(k in lxxx for k in [
                    'yddh', 'ssfjh', 'ssl', 'ssyq', 'dzyx', 'lxdh']), '无法获取住宿、联系信息'
         return lxxx
 
-    def save(self, delta=0, **info):
+    def save_request(self, places=[], description='', delta=0, **supplements):
         """尝试保存出入校信息"""
-        # supplement info
         template = {
             "crxrq": (datetime.now() + timedelta(days=delta)).strftime('%Y%m%d'),
+            'yqc': places,
+            'yqr': places,
+            'crxjtsx': description,
             "sqbh": "",
             "crxqd": "",
             "crxzd": "",
@@ -137,10 +144,7 @@ class Session(requests.Session):
             "fxyczz": "",
         }
         template.update(**self.get_supplement())
-        template.update(info)
-
-        assert all(k in template for k in [
-                   'crxjtsx', 'yqc', 'yqr']), '出入校信息不完整'
+        template.update(supplements)
 
         json = self.post('https://simso.pku.edu.cn/ssapi/stuaffair/epiApply/saveSqxx',
                          params={'applyType': 'yqwf'}, json=template).json()
@@ -168,6 +172,10 @@ class Session(requests.Session):
 
         assert json['success'], json
 
+    def fake_img(self):
+        self.upload_img(b'empty image', 'xcm')
+        self.upload_img(b'empty image', 'bjjkb')
+
     def submit(self) -> bool:
         assert self.sqbh, "请先获取申请编号！"
         json = self.get('https://simso.pku.edu.cn/ssapi/stuaffair/epiApply/submitSqxx', params={
@@ -175,14 +183,28 @@ class Session(requests.Session):
         }).json()
         assert json['success'], json
 
-    def get_latest(self):
-        # 获取最近的申请信息
+    def request_list(self) -> list[dict]:
         json = self.get(
             'https://simso.pku.edu.cn/ssapi/stuaffair/epiApply/getSqxxHis?pageNum=1').json()
         assert json['success']
 
-        self.sqbh = json['row'][0]['sqbh']
-        return json['row'][0]
+        return json['row']
+
+    def get_latest(self) -> dict:
+        """获取最近的申请信息"""
+        latest = self.request_list()[0]
+
+        self.sqbh = latest['sqbh']
+        return latest
+
+    def request_passed(self, delta=0):
+        """申请是否已通过"""
+        date = (datetime.now() + timedelta(days=delta)).strftime('%Y%m%d')
+        for row in self.request_list():
+            if row.get('crxrq', -1) == date and row.get('crxsy', -1) == '园区往返' and row.get('shbz', -1) == '审核通过':
+                return True
+
+        return False
 
 
 def prettify(data):
