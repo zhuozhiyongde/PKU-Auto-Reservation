@@ -23,6 +23,10 @@ jobs:
         uses: actions/setup-python@v2
       - name: 安装依赖
         run: pip3 install requests requests_toolbelt
+      - name: 设定时区
+        uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "Asia/Shanghai"
       - name: 运行
         env:
           STUDENTID: ${{secrets.STUDENTID}}
