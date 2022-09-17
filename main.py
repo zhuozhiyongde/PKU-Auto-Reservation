@@ -15,8 +15,7 @@ if __name__ == '__main__':
     s = Session()
     s.login(username, password)
 
-    if s.request_passed():
-        print('申请已通过，忽略')
+    if s.request_passed(delta):
         exit(0)
 
     try:
