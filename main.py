@@ -1,3 +1,4 @@
+from datetime import datetime
 from session import Session
 import os
 
@@ -12,11 +13,11 @@ description = os.environ['DESCRIPTION']
 delta = int(os.environ['DELTA'])
 
 if __name__ == '__main__':
+    print(datetime.now())
     s = Session()
     s.login(username, password)
 
-    if s.request_passed():
-        print('申请已通过，忽略')
+    if s.request_passed(delta):
         exit(0)
 
     try:

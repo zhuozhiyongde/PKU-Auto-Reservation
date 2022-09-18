@@ -202,6 +202,7 @@ class Session(requests.Session):
         date = (datetime.now() + timedelta(days=delta)).strftime('%Y%m%d')
         for row in self.request_list():
             if row.get('crxrq', -1) == date and row.get('crxsy', -1) == '园区往返' and row.get('shbz', -1) == '审核通过':
+                print(f'{date} 申请已通过')
                 return True
 
         return False
