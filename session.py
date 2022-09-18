@@ -142,6 +142,8 @@ class Session(requests.Session):
             "fxzgfxljs": "",
             "fxqzmj": "",
             "fxyczz": "",
+            "djsjbz": "y",
+            "djrq": ""
         }
         template.update(**self.get_supplement())
         template.update(supplements)
