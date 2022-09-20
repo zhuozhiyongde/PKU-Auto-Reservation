@@ -22,7 +22,6 @@ if __name__ == '__main__':
 
     try:
         s.save_request(places, description, delta)
-        s.fake_img()
 
     except Exception as e:
         msg = e.args[0]['msg'] if 'msg' in e.args[0] else e.args[0]
