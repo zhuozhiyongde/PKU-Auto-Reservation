@@ -46,7 +46,8 @@ if __name__ == "__main__":
     wait_time = (tomorrow - now).total_seconds()
 
     print(f"{'[Waiting]':<15}: {wait_time} s")
-
+    # 手动获取 2FA 验证码需要提前提醒，请恢复下述注释，并注释掉自动版本的代码
+    """ 
     # 等待到第二天的 00:00:00 时刻
     if data.get("bark", None):
         notifier = BarkNotifier(data["bark"])
@@ -59,7 +60,15 @@ if __name__ == "__main__":
             time.sleep(wait_time)
     else:
         notifier = None
-        time.sleep(wait_time)
+        time.sleep(wait_time) 
+    """
+    # 自动获取 2FA 验证码不需要提前提醒
+    # 等待到第二天的 00:00:00 时刻
+    if data.get("bark", None):
+        notifier = BarkNotifier(data["bark"])
+    else:
+        notifier = None
+    time.sleep(wait_time)
 
     # 开始执行任务
     start(notifier)

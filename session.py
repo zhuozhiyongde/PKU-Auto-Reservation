@@ -8,6 +8,8 @@
 
 
 import random
+import re
+import time
 from functools import wraps
 from urllib import parse
 
@@ -225,7 +227,25 @@ class Session(requests.Session):
     def submit_request(self, appointment) -> bool:
         sqxxid = self.save_request(appointment)
         self.request_2fa_code(sqxxid)
-        code = input("Please input the 2FA code: ")
+        # 手动输入 2FA code
+        # code = input("Please input the 2FA code: ")
+        
+        # 自动获取 2FA code
+        # 不断尝试获取 code.txt 内容，如果为空则等待 1s
+        code = ""
+        for i in range(10):
+            with open("code.txt", "r") as f:
+                code = f.read().strip()
+            if code:
+                break
+            print("Waiting for code...")
+            time.sleep(1)
+        # 删除 code.txt
+        with open("code.txt", "w") as f:
+            f.write("")
+
+        code = re.search(r"\d{6}", code).group()
+
         """
         GET:
         https://simso.pku.edu.cn/ssapi/stuaffair/epiVisitorAppt/submitSqxx?sid=ae14f8b3-7b29-4cd8-933e-ab92c3572f1d2110000000&_sk=2110000000&sqxxid=sqxx20240101000001&code=123456
