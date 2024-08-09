@@ -13,7 +13,7 @@ yysj: '10:00'
 # 预约原因
 yysy: '游览'
 # 预约模式，可选 燕园 / 新燕园
-mode: '新燕园'
+mode: '燕园'
 # bark 通知 key，可选，可以用于提前通知准备输入 2FA
 # bark: 'SqZPSeVtTSUCdrcnjWETYQ'
 # 被预约人信息，数组，务必按照这个格式填写
