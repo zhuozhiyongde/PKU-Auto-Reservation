@@ -1,35 +1,65 @@
-from datetime import datetime
-from session import Session
-import os
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
+# @Author  :   Arthals
+# @File    :   main.py
+# @Time    :   2024/08/10 03:06:58
+# @Contact :   zhuozhiyongde@126.com
+# @Software:   Visual Studio Code
 
 
-assert all(key in os.environ for key in [
-           'STUDENTID', 'PASSWORD', 'DESCRIPTION', 'PLACES', 'DELTA']), "Not all keys are provided"
+import time
+from datetime import datetime, timedelta
 
-username = os.environ['STUDENTID']
-password = os.environ['PASSWORD']
-places = os.environ['PLACES'].split(',')
-description = os.environ['DESCRIPTION']
-delta = int(os.environ['DELTA'])
+import yaml
 
-if __name__ == '__main__':
-    print(datetime.now())
-    s = Session()
-    s.login(username, password)
+from session import BarkNotifier, Session
 
-    if s.request_passed(delta):
-        exit(0)
+# load env
+with open("config.yaml", "r") as f:
+    data = yaml.safe_load(f)
+
+
+def start(notifier=None):
+    print(f"{'[Start]':<15}: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    s = Session(config=data, notifier=notifier)
+    s.login()
 
     try:
-        s.save_request(places, description, delta)
+        s.submit_all()
+        print(f"{'[Succeed]':<15}: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        if notifier:
+            notifier.send("All Succeed")
+    except AssertionError as e:
+        print(f"{'[Failed]':<15}: {e} {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        if notifier:
+            notifier.send(f"Failed: {e}")
 
-    except Exception as e:
-        msg = e.args[0]['msg'] if 'msg' in e.args[0] else e.args[0]
-        if '存在尚未审核通过的园区往返申请记录' in msg:
-            s.get_latest()['sqbh']
+
+if __name__ == "__main__":
+    print(f"{'[Schedule]':<15}: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+    # 计算到第二天 00:00:00 的时间差
+    now = datetime.now()
+    tomorrow = (now + timedelta(days=1)).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
+    wait_time = (tomorrow - now).total_seconds()
+
+    print(f"{'[Waiting]':<15}: {wait_time} s")
+
+    # 等待到第二天的 00:00:00 时刻
+    if data.get("bark", None):
+        notifier = BarkNotifier(data["bark"])
+        if wait_time > 30:
+            time.sleep(wait_time - 30)
+            notifier.send("请准备 30 秒后输入验证码")
+            time.sleep(30)
         else:
-            print(msg)
-            exit(1)
+            notifier.send("请立刻输入验证码")
+            time.sleep(wait_time)
+    else:
+        notifier = None
+        time.sleep(wait_time)
 
-    s.submit()
-    print('已申请')
+    # 开始执行任务
+    start(notifier)

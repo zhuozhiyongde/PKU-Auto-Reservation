@@ -1,0 +1,26 @@
+# 学生号
+username: '2110000000'
+# IAAA 密码
+password: 'i_love_thu'
+# 预约人手机号
+phone: '16666666666'
+# 预约日期，务必按照这个格式填写
+yyrq: '20240811'
+# 预约门
+yyxm: '东门'
+# 预约时间
+yysj: '10:00'
+# 预约原因
+yysy: '游览'
+# 预约模式，可选 燕园 / 新燕园
+mode: '新燕园'
+# bark 通知 key，可选，可以用于提前通知准备输入 2FA
+# bark: 'SqZPSeVtTSUCdrcnjWETYQ'
+# 被预约人信息，数组，务必按照这个格式填写
+appointments:
+    - name: 张三
+      id: 110101200001011111
+      phone: 11111111111
+    - name: 李四
+      id: 110101200002022222
+      phone: 12222222222
