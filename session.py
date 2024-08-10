@@ -233,7 +233,7 @@ class Session(requests.Session):
         if self._config["auto"]:
             # 不断尝试获取 code.txt 内容，如果为空则等待 1s
             code = ""
-            for i in range(10):
+            for i in range(30):
                 with open("code.txt", "r") as f:
                     code = f.read().strip()
                 if code:
