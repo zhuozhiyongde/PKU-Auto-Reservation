@@ -4,7 +4,7 @@
 
 ~~由于 2FA 的存在，这个流程无法自动化，只能半自动化完成，故你仍然需要在零点准时守在电脑前。~~
 
-这个工具现已彻底全自动化了所有网络请求，包括 2FA 验证。
+这个工具现已彻底自动化了所有网络请求，包括 2FA 验证。
 
 如果你不愿意/不能按照说明自动化输入验证码，想要回退到半自动化的版本，你需要参考注释，修改如下部分：
 
@@ -36,17 +36,41 @@
 
 ### 示例自动化快捷指令
 
-![step1](./README.assets/step_1.PNG)
+<!-- width 500px -->
 
-![step2](./README.assets/step_2.PNG)
+<img width="50%" src="./README.assets/step_1.PNG" alt="step1" />
 
-![step3](./README.assets/step_3.PNG)
+<img width="50%" src="./README.assets/step_2.PNG" alt="step2" />
+
+<img width="50%" src="./README.assets/step_3.PNG" alt="step3" />
+
+快捷指令各步骤搜索关键字：
+
+1. 信息
+2. 新建空白自动化
+3. 如果
+4. 设定变量
+5. 获取 URL 内容
 
 ### 示例 HTTP 服务器
 
 参见 `server-example.py`，记得修改其中的 `code.txt` 路径与头部信息鉴权。
 
 对于 Nginx 服务器部署、SSL 证书自签与反向代理，超出了本仓库的范围，在此不再赘述。
+
+如果你没有额外的服务器或者域名，那么也可以如下操作：
+
+1. 确保零点的时候你的电脑和手机位于同一个局域网下并都保持开机
+2. 修改 HTTP 服务器的侦听 Host 为 `0.0.0.0`
+3. 在手机的自动化快捷指令上使用 `http://<你的电脑局域网 IP>:<端口>` 来访问
+
+其中，mac 的局域网 IP 可以通过如下命令获取：
+
+```bash
+ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'
+```
+
+其他系统请自行搜索，Windows 或许会有额外的防火墙问题，请自行解决。
 
 ## 免责说明
 
