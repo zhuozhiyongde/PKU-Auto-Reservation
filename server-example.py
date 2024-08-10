@@ -18,7 +18,7 @@ async def sms(request: Request):
     if headers.get("Authorization", None) != "123456":
         return Response(status_code=403)
     data = await request.json()
-    with open("/home/ubuntu/PKU-Auto-Reservation/code.txt", "w") as f:
+    with open("./code.txt", "w") as f:
         f.write(data["content"])
     print(data)
 
