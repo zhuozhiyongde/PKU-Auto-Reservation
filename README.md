@@ -36,13 +36,11 @@
 
 ### 示例自动化快捷指令
 
-<!-- width 500px -->
-
-<img width="50%" src="./README.assets/step_1.PNG" alt="step1" />
-
-<img width="50%" src="./README.assets/step_2.PNG" alt="step2" />
-
-<img width="50%" src="./README.assets/step_3.PNG" alt="step3" />
+<div align="center">
+    <img width="50%" src="./README.assets/step_1.jpg" alt="step1" />
+    <img width="50%" src="./README.assets/step_2.jpg" alt="step2" />
+    <img width="50%" src="./README.assets/step_3.jpg" alt="step3" />
+</div>
 
 快捷指令各步骤搜索关键字：
 
@@ -62,7 +60,7 @@
 
 1. 确保零点的时候你的电脑和手机位于同一个局域网下并都保持开机
 2. 修改 HTTP 服务器的侦听 Host 为 `0.0.0.0`
-3. 在手机的自动化快捷指令上使用 `http://<你的电脑局域网 IP>:<端口>` 来访问
+3. 在手机的自动化快捷指令上使用 `http://<你的电脑局域网 IP>:<端口>` 来访问电脑上的 HTTP 服务器并提交验证码
 
 其中，mac 的局域网 IP 可以通过如下命令获取：
 
@@ -70,7 +68,29 @@
 ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'
 ```
 
+假设获取到的电脑局域网 IP 为 `192.168.31.75`，那么示例代码如下：
+
+`server-example.py`
+
+```python
+...
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+```
+
+快捷指令
+
+<div align="center">
+    <img width="50%" src="./README.assets/local_server_shortcut.jpg" alt="local_server_shortcut" />
+</div>
+
 其他系统请自行搜索，Windows 或许会有额外的防火墙问题，请自行解决。
+
+<div align="center">
+    <img width="50%" src="./README.assets/effect.jpg" alt="effect" />
+</div>
 
 ## 免责说明
 
