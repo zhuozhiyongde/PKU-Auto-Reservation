@@ -41,7 +41,7 @@ if __name__ == "__main__":
     # 计算到第二天 00:00:00 的时间差
     now = datetime.now()
     tomorrow = (now + timedelta(days=1)).replace(
-        hour=0, minute=0, second=0, microsecond=0
+        hour=0, minute=0, second=1, microsecond=0
     )
     wait_time = (tomorrow - now).total_seconds()
 
