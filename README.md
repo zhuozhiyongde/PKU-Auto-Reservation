@@ -6,6 +6,13 @@
 
 这个工具现已彻底自动化了所有网络请求，包括 2FA 验证。
 
+## 功能
+
+-   🚀 全自动/半自动预约入校申请
+-   🤖 允许无额外服务器的情况下自动化输入验证码
+-   ⏰ 零点定时提交申请，再无需上演速度与激情
+-   📢 Bark 通知，包括半自动模式时提前半分钟通知准备输入、通知申请结果
+
 如果你不愿意/不能按照说明自动化输入验证码，想要回退到半自动化的版本，你需要参考注释，修改如下部分：
 
 -   `session.py` 中的 `submit_request` 函数
@@ -13,9 +20,9 @@
 
 ## 简要上手教程
 
-1. 复制 `config-sample.yaml` 为 `config.yaml`，并填写其中的信息。
-2. 安装依赖：`pip install -r requirements.txt`。
-3. 运行 `python main.py`。
+1. 复制 `config-sample.yaml` 为 `config.yaml`，并填写其中的信息
+2. 安装依赖：`pip install -r requirements.txt`
+3. 运行 `python main.py`
 
 ## 自动化输入验证码
 
