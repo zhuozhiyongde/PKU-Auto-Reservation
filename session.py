@@ -227,24 +227,29 @@ class Session(requests.Session):
     def submit_request(self, appointment) -> bool:
         sqxxid = self.save_request(appointment)
         self.request_2fa_code(sqxxid)
-        # 手动输入 2FA code
-        # code = input("Please input the 2FA code: ")
-        
+
         # 自动获取 2FA code
-        # 不断尝试获取 code.txt 内容，如果为空则等待 1s
-        code = ""
-        for i in range(10):
-            with open("code.txt", "r") as f:
-                code = f.read().strip()
-            if code:
-                break
-            print("Waiting for code...")
-            time.sleep(1)
-        # 删除 code.txt
-        with open("code.txt", "w") as f:
-            f.write("")
+
+        if self._config["auto"]:
+            # 不断尝试获取 code.txt 内容，如果为空则等待 1s
+            code = ""
+            for i in range(10):
+                with open("code.txt", "r") as f:
+                    code = f.read().strip()
+                if code:
+                    break
+                print("Waiting for code...")
+                time.sleep(1)
+            # 删除 code.txt
+            with open("code.txt", "w") as f:
+                f.write("")
+
+        # 手动输入 2FA code
+        else:
+            code = input("Please input the 2FA code: ")
 
         code = re.search(r"\d{6}", code).group()
+        assert code, f"{'[Error]':<15}: Invalid 2FA code"
 
         """
         GET:

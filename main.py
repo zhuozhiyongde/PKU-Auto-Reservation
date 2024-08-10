@@ -46,29 +46,31 @@ if __name__ == "__main__":
     wait_time = (tomorrow - now).total_seconds()
 
     print(f"{'[Waiting]':<15}: {wait_time} s")
-    # 手动获取 2FA 验证码需要提前提醒，请恢复下述注释，并注释掉自动版本的代码
-    """ 
-    # 等待到第二天的 00:00:00 时刻
-    if data.get("bark", None):
-        notifier = BarkNotifier(data["bark"])
-        if wait_time > 30:
-            time.sleep(wait_time - 30)
-            notifier.send("请准备 30 秒后输入验证码")
-            time.sleep(30)
+    if data.get("auto", True):
+        # 自动获取 2FA 验证码不需要提前提醒
+        # 等待到第二天的 00:00:00 时刻
+        if data.get("bark", None):
+            notifier = BarkNotifier(data["bark"])
+            notifier.send("已启动自动预约脚本")
         else:
-            notifier.send("请立刻输入验证码")
+            notifier = None
+        time.sleep(wait_time)
+    else:
+        # 手动获取 2FA 验证码需要提前提醒
+        # 等待到第二天的 00:00:00 时刻
+        if data.get("bark", None):
+            notifier = BarkNotifier(data["bark"])
+            notifier.send("已启动自动预约脚本")
+            if wait_time > 30:
+                time.sleep(wait_time - 30)
+                notifier.send("请准备在 30 秒后输入验证码")
+                time.sleep(30)
+            else:
+                notifier.send("请立刻准备输入验证码，剩余时间已不足 30 秒")
+                time.sleep(wait_time)
+        else:
+            notifier = None
             time.sleep(wait_time)
-    else:
-        notifier = None
-        time.sleep(wait_time) 
-    """
-    # 自动获取 2FA 验证码不需要提前提醒
-    # 等待到第二天的 00:00:00 时刻
-    if data.get("bark", None):
-        notifier = BarkNotifier(data["bark"])
-    else:
-        notifier = None
-    time.sleep(wait_time)
 
     # 开始执行任务
     start(notifier)
