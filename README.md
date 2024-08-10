@@ -56,6 +56,8 @@
 
 对于 Nginx 服务器部署、SSL 证书自签与反向代理，超出了本仓库的范围，在此不再赘述。
 
+### 无额外服务器
+
 如果你没有额外的服务器或者域名，那么也可以如下操作：
 
 1. 确保零点的时候你的电脑和手机位于同一个局域网下并都保持开机
@@ -88,9 +90,9 @@ if __name__ == "__main__":
 
 其他系统请自行搜索，Windows 或许会有额外的防火墙问题，请自行解决。
 
-<div align="center">
-    <img width="50%" src="./README.assets/effect.jpg" alt="effect" />
-</div>
+#### 效果
+
+![effect](./README.assets/effect.jpg)
 
 ## 免责说明
 
