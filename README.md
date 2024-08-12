@@ -100,7 +100,7 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
 ```
 
-快捷指令
+快捷指令（注意此时因为没有 SSL 证书，协议是 HTTP 而不是 HTTPS）
 
 <div align="center">
     <img width="50%" src="./README.assets/local_server_shortcut.jpg" alt="local_server_shortcut" />
@@ -120,6 +120,14 @@ if __name__ == "__main__":
 如果你配置了 Bark，那么程序会尝试在需要输入验证码时提前半分钟通知你准备输入（不足半分钟则立即通知）。
 
 ## 测试结果
+
+### 燕园
+
+<div align="center">
+    <img width="50%" src="./README.assets/yan_yuan.jpg" alt="new_yan_yuan" />
+</div>
+
+### 新燕园
 
 <div align="center">
     <img width="50%" src="./README.assets/new_yan_yuan.jpg" alt="new_yan_yuan" />

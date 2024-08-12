@@ -32,6 +32,7 @@ class Session(requests.Session):
                 "Cache-Control": "max-age=0",
                 "TE": "Trailers",
                 "Pragma": "no-cache",
+                "Referer": f"https://simso.pku.edu.cn/pages/sadEpiVisitorAppt.html?_sk={self._config['username']}",
             }
         )
         self._base_url = "https://simso.pku.edu.cn/ssapi/"
