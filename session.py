@@ -214,6 +214,10 @@ class Session(requests.Session):
           "timestamp": 1704038401001
         }
         """
+        # 清空 code.txt
+        with open("code.txt", "w") as f:
+            f.write("")
+
         res = self.get(
             f"{self._base_url}/sendEcyzCode",
             params={
