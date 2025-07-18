@@ -1,3 +1,6 @@
+# 是否使用config的学生号、IAAA 密码、预约人手机号信息（建议不将敏感信息明文存储在文件里，默认为false）
+# 若为false，则会在运行时要求临时输入。此时请不要将敏感信息明文存储在 config.yaml 中。
+use_config_info: false
 # 学生号
 username: '2110000000'
 # IAAA 密码

@@ -8,6 +8,7 @@
 
 
 import time
+import getpass
 from datetime import datetime, timedelta
 
 import yaml
@@ -36,6 +37,11 @@ def start(notifier=None):
 
 
 if __name__ == "__main__":
+    if data.get("use_config_info", False):
+        data["username"] = input("Username: ")
+        data["password"] = getpass.getpass("Password: ")
+        data["phone"] = input("Phone: ")
+
     print(f"{'[Schedule]':<15}: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     # 计算到最早预约日期 08:00:01 的时间差
