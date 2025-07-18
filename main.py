@@ -38,17 +38,20 @@ def start(notifier=None):
 if __name__ == "__main__":
     print(f"{'[Schedule]':<15}: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-    # 计算到第二天 00:00:00 的时间差
+    # 计算到最早预约日期 08:00:01 的时间差
     now = datetime.now()
-    tomorrow = (now + timedelta(days=1)).replace(
+    date_to_reserve = datetime.strptime(data.get("yyrq", None), "%Y%m%d")
+    target_time = (date_to_reserve - timedelta(days=3)).replace(
         hour=8, minute=0, second=1, microsecond=0
     )
-    wait_time = (tomorrow - now).total_seconds()
+    print(f"{'[Target]':<15}: {target_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    wait_time = (target_time - now).total_seconds()
+    wait_time = max(0, wait_time)
 
     print(f"{'[Waiting]':<15}: {wait_time} s")
     if data.get("auto", True):
         # 自动获取 2FA 验证码不需要提前提醒
-        # 等待到第二天的 00:00:00 时刻
+        # 等待时间差
         if data.get("bark", None):
             notifier = BarkNotifier(data["bark"])
             notifier.send("已启动自动预约脚本")
@@ -57,7 +60,8 @@ if __name__ == "__main__":
         time.sleep(wait_time)
     else:
         # 手动获取 2FA 验证码需要提前提醒
-        # 等待到第二天的 00:00:00 时刻
+        # 等待时间差
+        if data.get("bark", None):
         if data.get("bark", None):
             notifier = BarkNotifier(data["bark"])
             notifier.send("已启动自动预约脚本")
