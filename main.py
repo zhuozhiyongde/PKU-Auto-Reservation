@@ -8,7 +8,6 @@
 
 
 import time
-import getpass
 from datetime import datetime, timedelta
 
 import yaml
@@ -37,17 +36,17 @@ def start(notifier=None):
 
 
 if __name__ == "__main__":
-    if not data.get("use_config_info", False):
-        data["username"] = input("Username: ")
-        data["password"] = getpass.getpass("Password: ")
-        data["phone"] = input("Phone: ")
 
     print(f"{'[Schedule]':<15}: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     # 计算到最早预约日期 08:00:01 的时间差
     now = datetime.now()
-    date_to_reserve = datetime.strptime(data.get("yyrq", None), "%Y%m%d")
-    target_time = (date_to_reserve - timedelta(days=3)).replace(
+    target_day = data.get("yyrq", None)
+    if not target_day:
+        target_day = (now + timedelta(days=1))
+    else:
+        target_day = datetime.strptime(target_day, "%Y%m%d")
+    target_time = (target_day - timedelta(days=3)).replace(
         hour=8, minute=0, second=1, microsecond=0
     )
     print(f"{'[Target]':<15}: {target_time.strftime('%Y-%m-%d %H:%M:%S')}")
