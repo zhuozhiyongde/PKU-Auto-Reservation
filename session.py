@@ -13,6 +13,7 @@ import time
 from functools import wraps
 from urllib import parse
 
+import pyotp
 import requests
 from loguru import logger
 
@@ -246,41 +247,49 @@ class Session(requests.Session):
 
     def submit_request(self, appointment) -> bool:
         sqxxid = self.save_request(appointment)
-        self.request_2fa_code(sqxxid)
 
-        # 自动获取 2FA code
-        student_id = self._config["username"]
-        code_file = f"{student_id}.txt"
-
-        if self._config["auto"]:
-            # 不断尝试获取学号特定的验证码文件内容，如果为空则等待 1s
-            code = ""
-            for i in range(60):  # 增加等待时间到60秒以支持多学生验证
-                try:
-                    with open(code_file, "r") as f:
-                        code = f.read().strip()
-                    if code:
-                        break
-                except FileNotFoundError:
-                    # 如果文件不存在，创建一个空文件
-                    with open(code_file, "w") as f:
-                        f.write("")
-
-                if i % 10 == 0:  # 每10秒输出一次等待信息
-                    logger.info(
-                        f"Waiting for code for student {student_id}... ({i + 1}/60s)"
-                    )
-                time.sleep(1)
-
-            # 清空验证码文件
-            with open(code_file, "w") as f:
-                f.write("")
-
-        # 手动输入 2FA code
+        # 基于 secret 的 totp 获取
+        if self._config["auto"] and self._config["totp_mode"] == "secret":
+            self.request_2fa_code(sqxxid)
+            totp = pyotp.TOTP(self._config["totp_secret"])
+            code = totp.now()
+        # 基于捷径的 totp 获取
         else:
-            code = input(f"Please input the 2FA code for {student_id}: ")
+            self.request_2fa_code(sqxxid)
+
+            # 自动获取 2FA code
+            if self._config["auto"]:
+                student_id = self._config["username"]
+                code_file = f"{student_id}.txt"
+                # 不断尝试获取学号特定的验证码文件内容，如果为空则等待 1s
+                code = ""
+                for i in range(60):  # 增加等待时间到60秒以支持多学生验证
+                    try:
+                        with open(code_file, "r") as f:
+                            code = f.read().strip()
+                        if code:
+                            break
+                    except FileNotFoundError:
+                        # 如果文件不存在，创建一个空文件
+                        with open(code_file, "w") as f:
+                            f.write("")
+
+                    if i % 10 == 0:  # 每10秒输出一次等待信息
+                        logger.info(
+                            f"Waiting for code for student {student_id}... ({i + 1}/60s)"
+                        )
+                    time.sleep(1)
+
+                # 清空验证码文件
+                with open(code_file, "w") as f:
+                    f.write("")
+
+            # 手动输入 2FA code
+            else:
+                code = input(f"Please input the 2FA code for {student_id}: ")
 
         code = re.search(r"\d{6}", code).group()
+        code = int(code)
         assert code, f"{'[Error]':<15}: Invalid 2FA code"
 
         """

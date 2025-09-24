@@ -77,6 +77,8 @@ def make_reservation(appointment_config, student_config):
         "mode": appointment_config["mode"],
         "auto": student_config["auto"],
         "appointments": appointment_config["visitors"],
+        "totp_mode": student_config.get("totp_mode", "shortcut"),
+        "totp_secret": student_config.get("totp_secret", None),
     }
 
     s = Session(config=session_config, notifier=notifier)
@@ -241,6 +243,8 @@ def test_logins(data):
             "mode": "燕园",
             "auto": data["auto"],
             "appointments": [],
+            "totp_mode": data.get("totp_mode", "shortcut"),
+            "totp_secret": data.get("totp_secret", None),
         }
 
         bark_token = data.get("bark", None)
@@ -327,6 +331,8 @@ if __name__ == "__main__":
             "phone": data["phone"],
             "bark": data.get("bark", None),
             "auto": data["auto"],
+            "totp_mode": data.get("totp_mode", "shortcut"),
+            "totp_secret": data.get("totp_secret", None),
         }
 
         # 显示预约总览

@@ -2,8 +2,6 @@
 
 鉴于暑假预约入校过于火爆，便有了这个小工具来提高成功率。
 
-~~由于 2FA 的存在，这个流程无法自动化，只能半自动化完成，故你仍然需要在零点准时守在电脑前。~~
-
 这个工具现已彻底自动化了所有网络请求，包括 2FA 验证。
 
 ## ✨ 功能
@@ -104,7 +102,27 @@ python main.py --config student2.yaml
 > [!IMPORTANT]
 > 自动化输入验证码需要设置 `config.yaml` 中的 `auto` 配置项为 `true`
 
-### ♾️ 验证码流程
+### 基于 TOTP 的验证码获取（推荐）
+
+这种方式和你使用北京大学 App 获得的手机令牌没有不同，只是我们需要进行一些操作以获得 TOTP 密钥，从而实现本地计算手机令牌。
+
+TOTP 密钥的加密方式核心是基于一个 `totp_secret` 密钥来结合时间戳计算出一个 6 位数字的验证码，正常情况下这个密钥存在于你的北京大学 App 中，但是无法被获取，所以我们需要按照如下特殊流程来获得 TOTP 密钥。
+
+1. 打开北京大学 App，进入 `我的 - 手机令牌`，点击 `解绑`
+
+2. 解绑完毕后，用电脑打开 [我的门户](https://portal.pku.edu.cn/portal2017/#/setting)，点击 `绑定手机令牌App`，然后会出现一个二维码（如下所示），**别急着扫，先截图**，然后使用一些二维码解析工具提取链接内容，得到一个形如 `otpauth://totp/iaaa.pku.edu.cn:2110000000?secret=K42CH3M2GADU6W8T&issuer=iaaa.pku.edu.cn` 的链接
+
+   ![totp](./README.assets/totp.png)
+
+3. 找到其中的 `secret` 参数，如上例中即为 `K42CH3M2GADU6W8T`，即为 TOTP 密钥，写入 `config.yaml` 中的 `totp_secret` 字段即可，同时，你需要设置 `totp_mode` 为 `secret`
+
+4. 使用诸如 FreeOTP / Google Authenticator / Microsoft Authenticator 等支持 TOTP 的应用来扫码绑定，绑定成功后，即可正常使用。此时你这些 App 中的令牌就和北京大学 App 中的令牌完全一致了。
+
+然后，你就可以直接使用这个密钥来实现本地计算手机令牌，并且自动化完成预约验证了。
+
+### 基于短信转发的验证码获取
+
+#### 基本流程
 
 1.  本程序请求验证码时，会清空对应学生的验证码文件（如 `2110000000.txt`）
 2.  手机收到短信后，自动发送 POST 请求到 HTTP 服务器（示例参见 `server.py`），示例请求体：
@@ -122,11 +140,11 @@ python main.py --config student2.yaml
 > [!NOTE]
 > 注意，彻底自动化需要 iOS 17 及以上版本，因为立即执行（而无需再手动点击）是 17 出的新功能。
 
-首先，请解绑手机北京大学 APP `我的 - 手机令牌`，因为我们无法自动化获取 TOTP 令牌来完成验证，取而代之的是使用短信验证码。
+**首先，请解绑手机北京大学 APP `我的 - 手机令牌`，因为按照这种方法，我们无法自动化获取 TOTP 令牌来完成验证，取而代之的是使用短信验证码。**
 
 为了使得服务器获得短信验证码，我们需要使用 `快捷指令` 来将短信内容发送到服务器。
 
-### 示例自动化快捷指令
+#### 示例自动化快捷指令
 
 <div align="center">
     <img width="50%" src="./README.assets/step_1.jpg" alt="step1" />
@@ -141,13 +159,13 @@ python main.py --config student2.yaml
 3. 设定变量
 4. 获取 URL 内容
 
-### 🌐 HTTP 服务器
+#### HTTP 服务器
 
 参见 `server.py`，提供了完整的验证码处理功能。你可能需要修改其中的 Authorization 头信息鉴权（默认为 `123456`）。
 
 对于 Nginx 服务器部署、SSL 证书自签与反向代理，超出了本仓库的范围，在此不再赘述。
 
-### 🏠 无额外服务器
+#### 无额外服务器
 
 如果你没有额外的服务器或者域名，那么也可以如下操作：
 
@@ -191,7 +209,7 @@ if __name__ == "__main__":
     <img width="50%" src="./README.assets/local_server_shortcut.jpg" alt="local_server_shortcut" />
 </div>
 
-### ✨ 自动获取验证码效果
+#### 基于短信转发的自动获取验证码效果
 
 ![effect](./README.assets/effect.jpg)
 
