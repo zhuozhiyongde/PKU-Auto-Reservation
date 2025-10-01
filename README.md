@@ -51,6 +51,8 @@ python main.py --config student2.yaml
 -   `phone`: 学生手机号
 -   `bark`: （可选）Bark 通知 key
 -   `auto`: 是否全自动化，true 为全自动，false 为半自动需要手动输入验证码
+-   `totp_mode`: TOTP 验证模式，可选 `secret`（基于 TOTP 的验证码获取）和 `shortcut`（基于短信转发的验证码获取）
+-   `totp_secret`: TOTP 密钥，当 `totp_mode` 为 `secret` 时需要配置此项，参见下文
 
 #### 预约列表
 
