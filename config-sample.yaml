@@ -7,7 +7,7 @@ bark: SqZPSeVtTSUCdrcnjWETYQ # 可选
 # 全局配置
 # 是否全自动化：请参照 README，判断是否可以做到
 auto: true
-totp_mode: 'shortcut' # TOTP验证模式：可选 "message"(通过转发短信来获取TOTP验证码) 或 "secret"(使用保存的密钥来获取TOTP验证码)，参见 README
+totp_mode: 'shortcut' # TOTP验证模式：可选 "shortcut"(通过短信转发来获取TOTP验证码) 或 "secret"(使用保存的密钥来获取TOTP验证码)，参见 README
 totp_secret: '' # 当 totp_mode 为 "secret" 时需要配置此项，参见 README
 
 # 预约配置列表
