@@ -15,9 +15,9 @@
 ## 🚀 简要上手教程
 
 1. 复制 `config-sample.yaml` 为 `config.yaml`，并根据新的格式填写其中的信息
-2. 安装依赖：`pip install -r requirements.txt`
-3. 运行 `python main.py` （使用默认配置文件）
-4. 或者使用 `python main.py -f <config_path>` 指定特定的配置文件
+2. 安装依赖：`uv sync`
+3. 运行 `uv run main.py` （使用默认配置文件）
+4. 或者使用 `uv run main.py -f <config_path>` 指定特定的配置文件
 
 程序支持以下命令行参数：
 
@@ -27,11 +27,11 @@
 
 ```bash
 # 使用默认配置文件
-python main.py
+uv run main.py
 
 # 指定特定配置文件
-python main.py -f student1.yaml
-python main.py --config student2.yaml
+uv run main.py -f student1.yaml
+uv run main.py --config student2.yaml
 ```
 
 这使得你可以为不同学生创建单独的配置文件，并通过多个进程并行运行。
@@ -89,8 +89,8 @@ python main.py --config student2.yaml
 
 2. **分别运行多个进程**：
     ```bash
-    python main.py -f student1.yaml
-    python main.py -f student2.yaml
+    uv run main.py -f student1.yaml
+    uv run main.py -f student2.yaml
     ```
 
 ## 📢 通知功能
