@@ -40,11 +40,13 @@ class Session(requests.Session):
         )
         self._base_url = "https://simso.pku.edu.cn/ssapi/"
 
-        assert self._config["mode"] in ["燕园", "新燕园"], "Invalid mode"
+        assert self._config["mode"] in ["燕园", "新燕园", "燕东新园"], "Invalid mode"
         if self._config["mode"] == "燕园":
             self._base_url += "stuaffair/epiVisitorAppt"
         elif self._config["mode"] == "新燕园":
             self._base_url += "bwb/cpVisitorAppt"
+        elif self._config["mode"] == "燕东新园":
+            self._base_url += "bwb/ydxyVisitorAppt"
 
     def __del__(self):
         self.close()
