@@ -47,7 +47,7 @@ uv run main.py --config student2.yaml
 #### 学生信息
 
 -   `username`: 学生学号（用于 IAAA 登录）
--   `password`: IAAA 密码
+-   `password`: IAAA 原始密码；程序会动态获取官方公钥并加密后提交，无需手动加密
 -   `phone`: 学生手机号
 -   `bark`: （可选）Bark 通知 key
 -   `auto`: 是否全自动化，true 为全自动，false 为半自动需要手动输入验证码

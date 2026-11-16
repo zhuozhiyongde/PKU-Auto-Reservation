@@ -7,6 +7,7 @@
 # @Software:   Visual Studio Code
 
 
+import base64
 import random
 import re
 import time
@@ -15,6 +16,8 @@ from urllib import parse
 
 import pyotp
 import requests
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from loguru import logger
 
 
@@ -74,20 +77,45 @@ class Session(requests.Session):
 
         return res
 
+    def _encrypt_password(self):
+        """按 IAAA 官方网页的 JSEncrypt 流程加密，公钥随登录动态获取"""
+        key_info = self.get(
+            "https://iaaa.pku.edu.cn/iaaa/getPublicKey.do", timeout=20
+        ).json()
+        if (
+            not key_info.get("success")
+            or not key_info.get("key")
+            or not key_info.get("version")
+        ):
+            raise RuntimeError("IAAA 登录公钥获取失败，未提交登录信息")
+
+        # 接口可能返回转义的 PEM 换行，需要先还原
+        pem = key_info["key"].replace("\\n", "\n").encode("ascii")
+        public_key = serialization.load_pem_public_key(pem)
+        if not isinstance(public_key, rsa.RSAPublicKey):
+            raise RuntimeError("IAAA 登录公钥不是 RSA 公钥，未提交登录信息")
+        encrypted = public_key.encrypt(
+            self._config["password"].encode("utf-8"), padding.PKCS1v15()
+        )
+        return base64.b64encode(encrypted).decode("ascii"), key_info["version"]
+
     def login(self) -> bool:
         """登录门户，重定向出入校申请"""
         # IAAA 登录
+        encrypted_password, key_version = self._encrypt_password()
         json = self.post(
             "https://iaaa.pku.edu.cn/iaaa/oauthlogin.do",
             data={
                 "userName": self._config["username"],
                 "appid": "portal2017",
-                "password": self._config["password"],
+                "password": encrypted_password,
+                "keyVersion": key_version,
                 "redirUrl": "https://portal.pku.edu.cn/portal2017/ssoLogin.do",
                 "randCode": "",
                 "smsCode": "",
-                "optCode": "",
+                "otpCode": "",
             },
+            timeout=20,
         ).json()
         assert json["success"], json
 
